@@ -1,8 +1,16 @@
 import React from "react";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
+import { authOptions } from "../api/auth/[...nextauth]/route";
 import { RegisterCard } from "@/components/RegisterCard";
 
-const page = () => {
+const page = async () => {
+  const session = await getServerSession(authOptions);
+  if (session ){
+    redirect("/dashboard");
+  }
+
   return (
     <div className="h-screen w-full flex justify-center items-center bg-slate-200">
       <RegisterCard/>

@@ -1,4 +1,5 @@
 "use client";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -13,6 +14,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Badge } from "./ui/badge";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -20,6 +24,9 @@ const FormSchema = z.object({
 });
 
 export function LoginForm() {
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -28,9 +35,25 @@ export function LoginForm() {
     },
   });
 
-  const onSubmit: any = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
-    form.reset();
+  const onSubmit: any = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      const res = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (res!.error) {
+        setError("Invalid credentials");
+        return;
+      }
+      setError(null);
+      router.replace("dashboard");
+      form.reset();
+    } catch (error: any) {
+      console.log(error.message);
+      setError(error.message);
+    }
   };
 
   return (
@@ -75,6 +98,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+        {error && <Badge variant="destructive">{error}</Badge>}
         <div className="inline-flex w-full justify-end font-bold">
           <Button type="submit">Login</Button>
         </div>

@@ -1,4 +1,6 @@
 "use client";
+import { useRouter } from "next/navigation";
+
 import {
   Card,
   CardContent,
@@ -8,7 +10,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
 import { LoginForm } from "./LoginForm";
 
 export function LoginCard() {
