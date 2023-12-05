@@ -4,14 +4,13 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { UserForm } from "./UserForm";
 
-export function LoginDialog() {
+export function SignupDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -19,20 +18,17 @@ export function LoginDialog() {
           variant="outline"
           className="font-bold rounded-full bg-slate-950 text-white border-2 lg:px"
         >
-          Login
+          SignUp
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="w-full text-center">Login</DialogTitle>
+          <DialogTitle className="w-full text-center">Sign-Up</DialogTitle>
           <DialogDescription className="w-full text-center">
-            Login using your email and password
+            Sign-Up using your email and password
           </DialogDescription>
         </DialogHeader>
         <UserForm />
-        <DialogFooter className="text-sm cursor-pointer">
-          {"Don't have an account? SignUp here"}
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
