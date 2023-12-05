@@ -1,4 +1,12 @@
 " use client";
+import { useSelector, useDispatch } from "react-redux";
+
+import type { RootState, AppDispatch } from "@/store/store";
+import {
+  handleIsLoginOrSignup,
+  openCloseSignupModal,
+} from "@/slices/modalSlice";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,8 +19,19 @@ import {
 import { UserForm } from "./UserForm";
 
 export function SignupDialog() {
+  const { openSignupModal, isLoginOrSignup } = useSelector(
+    (state: RootState) => state.modal
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
-    <Dialog>
+    <Dialog
+      open={openSignupModal}
+      onOpenChange={() => {
+        dispatch(openCloseSignupModal());
+        if (!isLoginOrSignup) dispatch(handleIsLoginOrSignup());
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           variant="outline"

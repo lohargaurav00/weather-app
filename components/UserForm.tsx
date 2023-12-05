@@ -2,6 +2,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useSelector, useDispatch } from "react-redux";
+
+import type { RootState, AppDispatch } from "@/store/store";
+import { openCloseLoginModal, openCloseSignupModal } from "@/slices/modalSlice";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +24,12 @@ const FormSchema = z.object({
 });
 
 export function UserForm() {
+  const { openLoginModal, openSignupModal , isLoginOrSignup} = useSelector(
+    (state: RootState) => state.modal
+  );
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -30,6 +40,8 @@ export function UserForm() {
 
   const onSubmit: any = (data: z.infer<typeof FormSchema>) => {
     console.log(data);
+    if (openLoginModal) dispatch(openCloseLoginModal());
+    if (openSignupModal) dispatch(openCloseSignupModal());
     form.reset();
   };
 
@@ -76,7 +88,7 @@ export function UserForm() {
           )}
         />
         <div className="inline-flex w-full justify-end font-bold">
-          <Button type="submit">Login</Button>
+          <Button type="submit">{isLoginOrSignup? "Signup" : "Login"}</Button>
         </div>
       </form>
     </Form>

@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import loginModalSlice from "@/slices/loginModalSlice";
+import modalSlice from "@/slices/modalSlice";
 
 export function makeStore() {
   return configureStore({
     reducer: {
-      loginModal: loginModalSlice,
+      modal: modalSlice,
     },
   });
 }

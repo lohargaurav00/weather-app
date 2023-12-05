@@ -1,4 +1,13 @@
-" use client";
+"use client";
+import { useSelector, useDispatch } from "react-redux";
+
+import type { RootState, AppDispatch } from "@/store/store";
+import {
+  handleIsLoginOrSignup,
+  openCloseLoginModal,
+  openCloseSignupModal,
+} from "@/slices/modalSlice";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,8 +21,19 @@ import {
 import { UserForm } from "./UserForm";
 
 export function LoginDialog() {
+  const { openLoginModal, isLoginOrSignup } = useSelector(
+    (state: RootState) => state.modal
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
-    <Dialog>
+    <Dialog
+      open={openLoginModal}
+      onOpenChange={() => {
+        dispatch(openCloseLoginModal());
+        if (isLoginOrSignup) dispatch(handleIsLoginOrSignup());
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           variant="outline"
@@ -30,8 +50,17 @@ export function LoginDialog() {
           </DialogDescription>
         </DialogHeader>
         <UserForm />
-        <DialogFooter className="text-sm cursor-pointer">
-          {"Don't have an account? SignUp here"}
+        <DialogFooter className="text-sm ">
+          <div
+            className="cursor-pointer"
+            onClick={() => {
+              dispatch(openCloseLoginModal());
+              dispatch(handleIsLoginOrSignup());
+              dispatch(openCloseSignupModal());
+            }}
+          >
+            {"Don't have an account? SignUp here"}
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
