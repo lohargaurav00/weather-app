@@ -1,7 +1,9 @@
 "use client";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Badge } from "./ui/badge";
 
 const FormSchema = z.object({
   name: z.string().nonempty("Please enter your name"),
@@ -21,6 +24,9 @@ const FormSchema = z.object({
 });
 
 export function RegisterForm() {
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -30,9 +36,23 @@ export function RegisterForm() {
     },
   });
 
-  const onSubmit: any = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+  const onSubmit: any = async (data: z.infer<typeof FormSchema>) => {
+    const response = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      setError(json.message);
+      return;
+    }
+
+    setError(null);
     form.reset();
+    router.push("/dashboard");
   };
 
   return (
@@ -90,6 +110,7 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
+        {error && <Badge variant="destructive">{error}</Badge>}
         <div className="inline-flex w-full justify-end font-bold">
           <Button type="submit">Register</Button>
         </div>
