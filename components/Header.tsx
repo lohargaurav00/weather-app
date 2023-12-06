@@ -22,7 +22,7 @@ const Header = ({ children }: { children?: React.ReactNode }) => {
       </div>
 
       <Button onClick={() => signOut()}>Log out</Button>
-      <Link href={"https://www.github.com"} target="_blank" rel="noreferrer">
+      <Link href={"https://github.com/lohargaurav00/weather-app"} target="_blank" rel="noreferrer">
         <FaGithub className="text-4xl text-primary cursor-pointer hover:opacity-90 active:scale-105" />
       </Link>
       {children}
