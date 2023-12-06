@@ -6,7 +6,10 @@ import usePlacesAutocomplete, {
   getLatLng,
 } from "use-places-autocomplete";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
+import { AppDispatch } from "@/redux/store/store";
+import { setCoordinates } from "@/redux/slices/coordinatesSlice";
 import {
   CommandDialog,
   CommandEmpty,
@@ -20,8 +23,7 @@ import { Button } from "./ui/button";
 const SearchDialog = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-
-  //   const { setLatAndLng, setCity } = useWeatherStore()
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -52,19 +54,16 @@ const SearchDialog = () => {
   const handleSelect =
     ({ description }: any) =>
     () => {
-      // When the user selects a place, we can replace the keyword without request data from API by setting the second parameter to "false"
-      //   setCity(description)
       setValue(description, false);
 
       setOpen(false);
       setValue("");
       clearSuggestions();
+      console.log(description);
 
       getGeocode({ address: description }).then((results) => {
         const { lat, lng } = getLatLng(results[0]);
-        // setLatAndLng(lat.toString(), lng.toString())
-
-        // router.push(`/search?lat=${lat}&lon=${lng}`)
+        dispatch(setCoordinates({ lat, lon: lng }));
       });
     };
 

@@ -1,14 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-import { OpenWeatherData, Coordinates } from "@/lib/types";
+import type { RootState } from "@/redux/store/store";
+import { OpenWeatherData} from "@/lib/types";
 
-const useCurrentWeather = ({ lat, lon }: Coordinates) => {
+const useCurrentWeather = () => {
+  const { coordinates } = useSelector((state: RootState) => state.coordinates);
   const [currentWeather, setCurrentWeather] = useState<OpenWeatherData | null>(
     null
   );
 
-  const latitude = lat || 20.903118;
-  const longitude = lon || 74.774986;
+  const latitude = coordinates.lat;
+  const longitude = coordinates.lon;
 
   const getCurrentWeather = useCallback(async () => {
     const response = await fetch(

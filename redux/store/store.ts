@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import modalSlice from "@/slices/modalSlice";
+import coordinatesSlice from "../slices/coordinatesSlice";
 
 export function makeStore() {
   return configureStore({
     reducer: {
-      modal: modalSlice,
+      coordinates: coordinatesSlice,
     },
   });
 }

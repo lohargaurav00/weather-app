@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-import { ForecastWeatherData , Coordinates } from "@/lib/types";
+import { ForecastWeatherData } from "@/lib/types";
+import { RootState } from "@/redux/store/store";
 
-const useForecastWeather = ({ lat, lon }: Coordinates) => {
+const useForecastWeather = () => {
+  const { coordinates } = useSelector((state: RootState) => state.coordinates);
   const [forecastWeather, setForecastWeather] =
-    useState<ForecastWeatherData  | null>(null);
+    useState<ForecastWeatherData | null>(null);
 
-  const latitude = lat || 20.903118;
-  const longitude = lon || 74.774986;
+  const latitude = coordinates.lat;
+  const longitude = coordinates.lon;
 
   const getForecastWeather = useCallback(async () => {
     const response = await fetch(
@@ -34,7 +37,6 @@ const useForecastWeather = ({ lat, lon }: Coordinates) => {
     } catch (error: any) {
       new Error(error.message);
     }
-
   }, [latitude, longitude]);
 
   return { forecastWeather };

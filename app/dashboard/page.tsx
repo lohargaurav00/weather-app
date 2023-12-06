@@ -12,20 +12,13 @@ import Pressure from "@/components/ui/pressure";
 import Header from "@/components/Header";
 import Forecast from "@/components/Forecast";
 
-import forecastData from "@/coverage/forecastData.json";
 import useCurrentWeather from "@/hooks/useCurrentWeather";
 import useForecastWeather from "@/hooks/useForecastWeather";
 
 const Page = () => {
-  const { currentWeather } = useCurrentWeather({
-    lat: 20.903118,
-    lon: 74.774986,
-  });
+  const { currentWeather } = useCurrentWeather();
 
-  const { forecastWeather } = useForecastWeather({
-    lat: 20.903118,
-    lon: 74.774986,
-  });
+  const { forecastWeather } = useForecastWeather();
 
   if (!currentWeather || !forecastWeather) {
     return (
