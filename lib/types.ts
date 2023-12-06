@@ -1,3 +1,8 @@
+export type Coordinates = {
+  lat: number;
+  lon: number;
+}
+
 export type OpenWeatherData = {
   coord: {
     lon: number;
