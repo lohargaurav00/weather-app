@@ -1,15 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { AppDispatch } from "@/redux/store/store";
 import { setCoordinates } from "@/redux/slices/coordinatesSlice";
+import { DEFAULT_SUGGESTIONS as suggestions } from "@/lib/config";
 import {
   CommandDialog,
   CommandEmpty,
@@ -22,50 +18,22 @@ import { Button } from "./ui/button";
 
 const SearchDialog = () => {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [value, setValue] = useState("");
 
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
-
-  const {
-    ready,
-    value,
-    suggestions: { status, data },
-    setValue,
-    clearSuggestions,
-  } = usePlacesAutocomplete({
-    callbackName: "YOUR_CALLBACK_NAME",
-    requestOptions: {
-      types: ["(cities)"],
-    },
-    debounce: 500,
-  });
-
-  const handleSelect =
-    ({ description }: any) =>
-    () => {
-      setValue(description, false);
-
+  const handleSelect = (suggestion: any) => {
+    return () => {
+      console.log(suggestion);
       setOpen(false);
       setValue("");
-      clearSuggestions();
-      console.log(description);
-
-      getGeocode({ address: description }).then((results) => {
-        const { lat, lng } = getLatLng(results[0]);
-        dispatch(setCoordinates({ lat, lon: lng }));
-      });
+      dispatch(
+        setCoordinates({
+          lat: suggestion.coordinates.lat,
+          lon: suggestion.coordinates.lng,
+        })
+      );
     };
+  };
 
   return (
     <>
@@ -87,29 +55,18 @@ const SearchDialog = () => {
           placeholder="Search city..."
           value={value}
           onValueChange={setValue}
-          disabled={!ready}
+          // disabled={!ready}
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Suggestions">
-            {/* {!data.length && (
-              <>
-                {suggestions.map((suggestion, i) => (
-                  <CommandItem key={i} onSelect={handleSelect(suggestion)}>
-                    {suggestion.description}
-                  </CommandItem>
-                ))}
-              </>
-            )} */}
-            {status === "OK" &&
-              data.map((suggestion) => (
-                <CommandItem
-                  key={suggestion.place_id}
-                  onSelect={handleSelect(suggestion)}
-                >
+            <>
+              {suggestions.map((suggestion, i) => (
+                <CommandItem key={i} onSelect={handleSelect(suggestion)}>
                   {suggestion.description}
                 </CommandItem>
               ))}
+            </>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
